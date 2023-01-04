@@ -7,10 +7,16 @@ function! overview#Recompile()
 
     echo 'recompiling...'
 
-    let l:infile = [shellescape(expand('%'))]
+    let l:infile = expand('%')
+
+    if !filereadable(l:infile)
+        echo 'ov recompile failed: no file given.'
+        return 0
+    endif
 
     let l:outfile_arg = ['-o']
     let l:outfile = [shellescape(expand('%:p:r').'.html')]
+    let l:infile = [shellescape(l:infile)]
 
     let l:cmd = ['bash'] + s:ov_path + l:infile + l:outfile_arg + l:outfile
 
@@ -24,6 +30,26 @@ function! overview#Recompile()
     elseif v:shell_error >= 1
         echo 'ov recompile: an error ocurred ['.v:shell_error.']'
         return 0
+    endif
+endfunction
+
+function! overview#ViewHTML()
+    let l:filename = expand('%:p:r').'.html'
+
+    if filereadable(l:filename)
+        call overview#OpenInBrowser(l:filename)
+    else
+        let l:ret = overview#Recompile()
+        if l:ret == 1
+            call overview#OpenInBrowser(l:filename)
+        endif
+    endif
+endfunction
+
+function! overview#OpenInBrowser(filename)
+    if filereadable(a:filename)
+        silent execute '! xdg-open '. shellescape(a:filename)
+        redraw!
     endif
 endfunction
 
@@ -52,3 +78,4 @@ endfunction
 
 nnoremap <Leader>or :call overview#Recompile()<CR>
 nnoremap <Leader>oo :call overview#ToggleCompileOnSave()<CR>
+nnoremap <Leader>ov :call overview#ViewHTML()<CR>
