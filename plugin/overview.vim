@@ -26,13 +26,10 @@ function! overview#Recompile()
         let l:script_tag = [shellescape('<script src="' . s:js_path . '"></script>')]
         let l:js_arg = ['--additional-js']
         let l:cmd += l:js_arg + l:script_tag
-        echo 'js injected'
+        " echo 'js injected'
     endif
 
     let l:ret = system(join(l:cmd, " "))
-
-    echo l:ret
-    return
 
     redraw
 
@@ -101,6 +98,7 @@ function! overview#ToggleCompileOnSave()
             autocmd!
             autocmd BufWritePost *.mtex call overview#Recompile()
         augroup END
+        redraw
         echo 'ov continous recompilation started.'
         return
     elseif s:continous == 1
@@ -110,6 +108,7 @@ function! overview#ToggleCompileOnSave()
         augroup vimov
             autocmd!
         augroup END
+        redraw
         echo 'ov continous recompilation stopped.'
         return
     endif
