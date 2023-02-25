@@ -35,7 +35,6 @@ main() {
         setup_venv
         install_requirements
     else
-    else
         echo 'No python3 in path detected, aborting.'
     fi
 }
