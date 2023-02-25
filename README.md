@@ -8,7 +8,7 @@ It produces a html file with mathML support via [temml](https://temml.org).
 
 You can install this plugin for example via
 [vim-plug](https://github.com/junegunn/vim-plug)
-by appending `Plug mkirc/vim-overview, { 'do': './install.sh' }` to the
+by appending `Plug 'mkirc/vim-overview', {'branch' : 'autoreload', 'do' : './install.sh'}` to the
 vim-plug section in your vimrc and running `:PlugInstall`
 in vim. This runs a short [install script](https://github.com/mkirc/vim-overview/blob/main/install.sh)
 to install python dependencies. You can also skip the {'do'} part and run the
