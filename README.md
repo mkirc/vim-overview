@@ -8,10 +8,18 @@ It produces a html file with mathML support via [temml](https://temml.org).
 
 You can install this plugin for example via
 [vim-plug](https://github.com/junegunn/vim-plug)
-by appending `Plug mkirc/vim-overview` to the
+by appending `Plug mkirc/vim-overview, { 'do': './install.sh' }` to the
 vim-plug section in your vimrc and running `:PlugInstall`
-in vim. Alternatively you can clone this repository
-in your `~/.vim/autoload/` directory.
+in vim. This runs a short [install script](https://github.com/mkirc/vim-overview/blob/main/install.sh)
+to install python dependencies. You can also skip the {'do'} part and run the
+script yourself via `bash install.sh`.
+
+Alternatively you can clone this repository
+in your `~/.vim/autoload/` directory. Make sure to
+run [install.sh](https://github.com/mkirc/vim-overview/blob/main/install.sh).
+
+This project depends on `python version >= 3.9`, `bash` and
+`pandoc`.
 
 ## Usage
 
