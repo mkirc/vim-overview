@@ -136,4 +136,3 @@ endfunction
 nnoremap <Leader>or :call overview#Recompile()<CR>
 nnoremap <Leader>oo :call overview#ToggleCompileOnSave()<CR>
 nnoremap <Leader>ov :call overview#ViewHTML()<CR>
-nnoremap <Leader>op :call overview#GetUnusedPort()<CR>
