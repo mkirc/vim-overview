@@ -3,7 +3,9 @@ let s:continous = 0
 
 let s:autoreload_path = [resolve(expand('<sfile>:p:h')) . "/start_autoreload_server.bash"]
 let s:ov_path = [resolve(expand('<sfile>:p:h:h')) . '/overview/overview.bash']
-let s:js_path = resolve(expand('<sfile>:p:h:h')) . "/ws-autoreload/autoreload.js"
+let s:ws_js_path = resolve(expand('<sfile>:p:h:h')) . "/ws-autoreload/autoreload.js"
+let s:python = [resolve(expand('<sfile>:p:h:h')) . '/ws-autoreload/venv/bin/python']
+let s:get_port_script = [resolve(expand('<sfile>:p:h')) . '/get_unused_port.py']
 
 function! overview#Recompile()
 
@@ -23,9 +25,10 @@ function! overview#Recompile()
     let l:cmd = ['bash'] + s:ov_path + l:infile + l:outfile_arg + l:outfile
 
     if s:continous == 1
-        let l:script_tag = [shellescape('<script src="' . s:js_path . '"></script>')]
+        let l:script_tag = ['<script type="text/javascript">let wsPort=' . s:autoreload_port . '</script>']
+        let l:script_tag += ['<script type="text/javascript" src="' . s:ws_js_path . '"></script>']
         let l:js_arg = ['--additional-js']
-        let l:cmd += l:js_arg + l:script_tag
+        let l:cmd += l:js_arg + [shellescape(join(l:script_tag,""))]
         " echo 'js injected'
     endif
 
@@ -63,14 +66,22 @@ function! overview#OpenInBrowser(filename)
     endif
 endfunction
 
+function! overview#GetUnusedPort()
+    let s:autoreload_port = system(join(s:python + s:get_port_script, " "))
+
+    if v:shell_error == 0
+        return 1
+    elseif v:shell_error >= 1
+        return 0
+    endif
+endfunction
+
 function! overview#StartAutoreloadServer()
 
     let l:dirname = [shellescape(expand('%:p:h'))]
-    let l:cmd = s:autoreload_path + l:dirname
+    let l:cmd = s:autoreload_path + l:dirname + ['--port'] + [s:autoreload_port]
 
     let s:autoreload_pid = system(join(l:cmd, " "))
-
-    " echo s:autoreload_pid
 
     if v:shell_error == 0
         return 1
@@ -92,8 +103,13 @@ function! overview#ToggleCompileOnSave()
 
     if s:continous == 0
         let s:continous = 1
-        call overview#StartAutoreloadServer()
+        call overview#GetUnusedPort()
+        if s:autoreload_port == 0
+            echo 'ov [WARNING]: all ports in use, aborting!'
+            return
+        endif
         call overview#Recompile()
+        call overview#StartAutoreloadServer()
         augroup vimov
             autocmd!
             autocmd BufWritePost *.mtex call overview#Recompile()
@@ -120,3 +136,4 @@ endfunction
 nnoremap <Leader>or :call overview#Recompile()<CR>
 nnoremap <Leader>oo :call overview#ToggleCompileOnSave()<CR>
 nnoremap <Leader>ov :call overview#ViewHTML()<CR>
+nnoremap <Leader>op :call overview#GetUnusedPort()<CR>
