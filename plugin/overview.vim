@@ -112,7 +112,7 @@ function! overview#ToggleCompileOnSave()
         call overview#StartAutoreloadServer()
         augroup vimov
             autocmd!
-            autocmd BufWritePost *.mtex call overview#Recompile()
+            autocmd BufWritePost *.mtex, *.md, *.markdown call overview#Recompile()
         augroup END
         redraw
         echo 'ov continous recompilation started.'
