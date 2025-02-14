@@ -1,7 +1,7 @@
 # vim-overview
 
 This is a vim plugin for [overview](https://github.com/mkirc/overview.git),
-a pandoc-based for taking (eg. lecture) notes with markdown and LaTeX.
+a pandoc-based tool for taking (eg. lecture) notes with markdown and LaTeX.
 It produces a html file with mathML support via [temml](https://temml.org).
 
 ## Installation
